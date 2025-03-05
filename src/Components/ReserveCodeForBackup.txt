@@ -1,0 +1,925 @@
+// here we keep code befor update the code in case of data loss we get the previous running code from here
+
+this is the Add Element Model Code from Admin Dashboard
+
+  {/* Add Element Modal */}
+
+        // this is the previous code with big cross button
+      {/* <Modal
+        open={open}
+        onClose={() => {}} // Prevent closing when clicking outside
+        closeAfterTransition
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "#fff",
+            boxShadow: 24,
+            borderRadius: 3,
+            p: 4,
+            width: "60%",
+            maxWidth: "800px", // Limit maximum width for better readability
+            maxHeight: "80vh",
+            overflowY: "auto",
+            position: "relative", // Add relative positioning to position the close icon
+          }}
+        > */}
+          {/* Close Icon in the top right corner */}
+          {/* <IconButton
+            onClick={handleClose} // Close the modal when clicked
+            sx={{
+              position: "absolute",
+              top: 8,
+              right: 8,
+              color: "text.secondary", // Use a neutral color for the close button
+              "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.04)" }, // Subtle hover effect
+            }}
+          >
+            <CloseIcon />
+          </IconButton> */}
+
+          {/* Add the form from AddElement */}
+          {/* <AddElement
+            handleClose={handleClose("AddElement")} // Pass the same handleClose function
+            getAllData={getAllData}
+          />
+        </Box>
+      </Modal>  */}
+
+      //this is the running code of Add Element Model with new Changes 
+
+       <Modal
+        open={open}
+        onClose={null} // Prevent closing when clicking outside
+        closeAfterTransition
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "#fff",
+            boxShadow: 24,
+            borderRadius: 3,
+            p: 4,
+            width: "60%",
+            maxHeight: "80vh",
+            overflowY: "auto",
+            position: "relative", // Add relative positioning to position the close icon
+          }}
+        >
+          {/* Close Icon in the top right corner */}
+       <IconButton
+            onClick={handleClose} // Close the modal when clicked
+            sx={{
+              position: "absolute",
+              top: 8,
+              right: 8,
+              backgroundColor: "#f44336", // Red background for the close button
+              color: "#fff",
+              "&:hover": { backgroundColor: "#d32f2f" }, // Darken red on hover
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+
+          {/* Add the form from AddElement */}
+          <AddElement
+            handleClose={() => handleClose("AddElement")}
+            getAllData={getAllData}
+          />
+        </Box>
+      </Modal>  
+
+
+// this is the AddElement.jsx code for the backup 
+
+// import React, { useEffect, useState } from "react";
+// import { addItem } from "../../../Service/AdminServices"; // Import the service
+
+// import {
+//   Box,
+//   Button,
+//   TextField,
+//   Grid2,
+//   Select,
+//   MenuItem,
+//   FormControl,
+//   InputLabel,
+// } from "@mui/material";
+// import Config from "../../../Service/Config";
+
+// const AddElement = ({ handleClose, getAllData }) => {
+//   const [category, setCategory] = useState("Category");
+//   const [subCategory, setSubCategory] = useState("Sub Category");
+//   const [formData, setFormData] = useState({
+//     name: "",
+//     description: "",
+//     sap_no: "",
+//     value: "",
+//     manufacturer: "",
+//     package_box: "",
+//     location: "",
+//     mpn: "",
+//     stock: "",
+//   });
+//   const [errors, setErrors] = useState({
+//     name: false,
+//     description: false,
+//     sap_no: false,
+//     value: false,
+//     manufacturer: false,
+//     package_box: false,
+//     location: false,
+//     mpn: false,
+//     stock: false,
+//   });
+
+//   const handleCategoryChange = (event) => {
+//     setCategory(event.target.value);
+//   };
+
+//   const handleSubCategoryChange = (event) => {
+//     setSubCategory(event.target.value);
+//   };
+
+//   const handleInputChange = (field) => (event) => {
+//     setFormData({ ...formData, [field]: event.target.value });
+//     setErrors({ ...errors, [field]: false }); // Reset error when user starts typing
+//   };
+
+//   const isFormValid = () => {
+//     let valid = true;
+//     const newErrors = { ...errors };
+
+//     if (!formData.name.trim()) {
+//       newErrors.name = true;
+//       valid = false;
+//     }
+//     if (!formData.description.trim()) {
+//       newErrors.description = true;
+//       valid = false;
+//     }
+//     if (category === "Category") {
+//       valid = false;
+//     }
+//     if (subCategory === "Sub Category") {
+//       valid = false;
+//     }
+//     if (!formData.value.trim()) {
+//       newErrors.value = true;
+//       valid = false;
+//     }
+//     if (!formData.manufacturer.trim()) {
+//       newErrors.manufacturer = true;
+//       valid = false;
+//     }
+//     if (!formData.location.trim()) {
+//       newErrors.location = true;
+//       valid = false;
+//     }
+//     if (!formData.stock.trim()) {
+//       newErrors.stock = true;
+//       valid = false;
+//     }
+
+//     // No validation for MPN, SAP NO, and Package Box as they are now optional
+//     setErrors(newErrors);
+//     return valid;
+//   };
+//   useEffect(() => {
+//     getAllData();
+//   }, []);
+
+//   const handleSubmit = async () => {
+//     if (isFormValid()) {
+//       // Prepare form data for API submission
+//       const dataToSubmit = {
+//         name: formData.name,
+//         category: category,
+//         subCategory: subCategory,
+//         value: formData.value,
+//         description: formData.description,
+//         manufacturer: formData.manufacturer,
+//         package_box: formData.package_box,
+//         location: formData.location,
+//         mpn: formData.mpn,
+//         sap_no: formData.sap_no,
+//         stock: formData.stock,
+//       };
+
+//       // Get token from session storage
+//       const token = sessionStorage.getItem("token");
+
+//       try {
+//         // Make API call
+//         const response = await fetch(`${Config.API_BASE_URL}item/add`, {
+//           method: "POST",
+//           headers: {
+//             "Content-Type": "application/json",
+//             Authorization: `Bearer ${token}`,
+//           },
+//           body: JSON.stringify(dataToSubmit),
+//         });
+
+//         if (!response.ok) {
+//           throw new Error("Failed to submit the form");
+//         }
+//         getAllData();
+//         handleClose();
+//       } catch (error) {
+//         console.error("Error submitting form:", error);
+//         alert("An error occurred while submitting the form. Please try again.");
+//       }
+//     } else {
+//       alert("Please fill out all mandatory fields.");
+//     }
+//   };
+
+//   return (
+//     <Box
+//       sx={{
+//         padding: 4,
+//         backgroundColor: "#fff",
+//         borderRadius: "8px",
+//         boxShadow: 24,
+//       }}
+//     >
+//       <Grid2 container spacing={3}>
+//         <Grid2 item xs={12}>
+//           <TextField
+//             label="Asset Name"
+//             variant="outlined"
+//             fullWidth
+//             sx={{ borderRadius: "8px", backgroundColor: "#f5f5f5" }}
+//             value={formData.name}
+//             onChange={handleInputChange("name")}
+//             error={errors.name}
+//             helperText={errors.name ? "Asset Name is required" : ""}
+//           />
+//         </Grid2>
+
+//         <Grid2 item xs={12} sm={6}>
+//           <TextField
+//             label="Value"
+//             variant="outlined"
+//             fullWidth
+//             sx={{ borderRadius: "8px", backgroundColor: "#f5f5f5" }}
+//             value={formData.value}
+//             onChange={handleInputChange("value")} // Handle value change
+//             error={errors.value}
+//             helperText={errors.value ? "Value is required" : ""}
+//           />
+//         </Grid2>
+
+//         <Grid2 item xs={12}>
+//           <TextField
+//             label="Description"
+//             variant="outlined"
+//             fullWidth
+//             sx={{ borderRadius: "8px", backgroundColor: "#f5f5f5" }}
+//             value={formData.description}
+//             onChange={handleInputChange("description")}
+//             error={errors.description}
+//             helperText={errors.description ? "Description is required" : ""}
+//           />
+//         </Grid2>
+
+//         <Grid2 item xs={12} sm={6}>
+//           <FormControl variant="outlined" fullWidth>
+//             <InputLabel>Sub Category</InputLabel>
+//             <Select
+//               value={subCategory}
+//               onChange={handleSubCategoryChange}
+//               label="Sub Category"
+//             >
+//               <MenuItem value="Sub Category" disabled>
+//                 Sub Category
+//               </MenuItem>
+//               <MenuItem value="Electronics">Electronics</MenuItem>
+//               <MenuItem value="Mechanics">Tools & Instruments</MenuItem>
+//             </Select>
+//           </FormControl>
+//         </Grid2>
+
+//         <Grid2 item xs={12} sm={6}>
+//           <FormControl variant="outlined" fullWidth>
+//             <InputLabel>Category</InputLabel>
+//             <Select
+//               value={category}
+//               onChange={handleCategoryChange}
+//               label="Category"
+//             >
+//               <MenuItem value="Category" disabled>
+//                 Category
+//               </MenuItem>
+//               <MenuItem value="Asset">Asset</MenuItem>
+//               <MenuItem value="Component">Component</MenuItem>
+//             </Select>
+//           </FormControl>
+//         </Grid2>
+
+//         <Grid2 item xs={12} sm={6}>
+//           <TextField
+//             label="Manufacturer"
+//             variant="outlined"
+//             fullWidth
+//             sx={{ borderRadius: "8px", backgroundColor: "#f5f5f5" }}
+//             value={formData.manufacturer}
+//             onChange={handleInputChange("manufacturer")}
+//             error={errors.manufacturer}
+//             helperText={errors.manufacturer ? "Manufacturer is required" : ""}
+//           />
+//         </Grid2>
+
+//         <Grid2 item xs={12} sm={6}>
+//           <TextField
+//             label="Location"
+//             variant="outlined"
+//             fullWidth
+//             sx={{ borderRadius: "8px", backgroundColor: "#f5f5f5" }}
+//             value={formData.location}
+//             onChange={handleInputChange("location")}
+//             error={errors.location}
+//             helperText={errors.location ? "Location is required" : ""}
+//           />
+//         </Grid2>
+
+//         <Grid2 item xs={12} sm={6}>
+//           <TextField
+//             label="Package Box"
+//             variant="outlined"
+//             fullWidth
+//             sx={{ borderRadius: "8px", backgroundColor: "#f5f5f5" }}
+//             value={formData.package_box}
+//             onChange={handleInputChange("package_box")}
+//             error={errors.package_box}
+//             helperText={errors.package_box ? "Package Box is required" : ""}
+//           />
+//         </Grid2>
+
+//         <Grid2 item xs={12} sm={6}>
+//           <TextField
+//             label="MPN"
+//             variant="outlined"
+//             fullWidth
+//             sx={{ borderRadius: "8px", backgroundColor: "#f5f5f5" }}
+//             value={formData.mpn}
+//             onChange={handleInputChange("mpn")}
+//             // error={errors.mpn}
+//             // helperText={errors.mpn ? "MPN is required" : ""}
+//           />
+//         </Grid2>
+//         <Grid2 item xs={12} sm={6}>
+//           <TextField
+//             label="SAP NO"
+//             variant="outlined"
+//             fullWidth
+//             sx={{ borderRadius: "8px", backgroundColor: "#f5f5f5" }}
+//             value={formData.sap_no}
+//             onChange={handleInputChange("sap_no")}
+//             error={errors.sap_no}
+//             helperText={errors.sap_no ? "SAP NO is required" : ""}
+//           />
+//         </Grid2>
+//         <Grid2 item xs={12} sm={6}>
+//           <TextField
+//             label="Stock"
+//             variant="outlined"
+//             fullWidth
+//             sx={{ borderRadius: "8px", backgroundColor: "#f5f5f5" }}
+//             value={formData.stock}
+//             onChange={handleInputChange("stock")}
+//             error={errors.stock}
+//             helperText={errors.stock ? "Stock is required" : ""}
+//           />
+//         </Grid2>
+//       </Grid2>
+
+//       {/* Save Button */}
+//       <Box textAlign="center" mt={4}>
+//         <Button
+//           variant="contained"
+//           color="primary"
+//           size="large"
+//           sx={{
+//             borderRadius: "8px",
+//             "&:hover": { backgroundColor: "#1976d2" }, // Darken the button color on hover
+//           }}
+//           onClick={handleSubmit}
+//         >
+//           Save
+//         </Button>
+//       </Box>
+//     </Box>
+//   );
+// };
+
+// export default AddElement;
+
+
+import React, { useEffect, useState } from "react";
+import { addItem } from "../../../Service/AdminServices"; // Import the service
+import {
+  Box,
+  Button,
+  TextField,
+  Grid,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Typography,
+} from "@mui/material";
+import Config from "../../../Service/Config";
+
+const AddElement = ({ handleClose, getAllData }) => {
+  const [category, setCategory] = useState("Category");
+  const [subCategory, setSubCategory] = useState("Sub Category");
+  const [formData, setFormData] = useState({
+    name: "",
+    description: "",
+    sap_no: "",
+    value: "",
+    manufacturer: "",
+    package_box: "",
+    location: "",
+    mpn: "",
+    stock: "",
+  });
+  const [errors, setErrors] = useState({
+    name: false,
+    description: false,
+    sap_no: false,
+    value: false,
+    manufacturer: false,
+    package_box: false,
+    location: false,
+    mpn: false,
+    stock: false,
+  });
+
+  const handleCategoryChange = (event) => {
+    setCategory(event.target.value);
+  };
+
+  const handleSubCategoryChange = (event) => {
+    setSubCategory(event.target.value);
+  };
+
+  const handleInputChange = (field) => (event) => {
+    setFormData({ ...formData, [field]: event.target.value });
+    setErrors({ ...errors, [field]: false }); // Reset error when user starts typing
+  };
+
+  const isFormValid = () => {
+    let valid = true;
+    const newErrors = { ...errors };
+
+    if (!formData.name.trim()) {
+      newErrors.name = true;
+      valid = false;
+    }
+    if (!formData.description.trim()) {
+      newErrors.description = true;
+      valid = false;
+    }
+    if (category === "Category") {
+      valid = false;
+    }
+    if (subCategory === "Sub Category") {
+      valid = false;
+    }
+    if (!formData.value.trim()) {
+      newErrors.value = true;
+      valid = false;
+    }
+    if (!formData.manufacturer.trim()) {
+      newErrors.manufacturer = true;
+      valid = false;
+    }
+    if (!formData.location.trim()) {
+      newErrors.location = true;
+      valid = false;
+    }
+    if (!formData.stock.trim()) {
+      newErrors.stock = true;
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
+  };
+
+  useEffect(() => {
+    getAllData();
+  }, []);
+
+
+  
+  const handleSubmit = async () => {
+    if (isFormValid()) {
+      const dataToSubmit = {
+        name: formData.name,
+        category: category,
+        subCategory: subCategory,
+        value: formData.value,
+        description: formData.description,
+        manufacturer: formData.manufacturer,
+        package_box: formData.package_box,
+        location: formData.location,
+        mpn: formData.mpn,
+        sap_no: formData.sap_no,
+        stock: formData.stock,
+      };
+
+      const token = sessionStorage.getItem("token");
+
+      try {
+        const response = await fetch(`${Config.API_BASE_URL}item/add`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(dataToSubmit),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to submit the form");
+        }
+        getAllData();
+        handleClose(); // Close the modal after successful submission
+      } catch (error) {
+        console.error("Error submitting form:", error);
+        alert("An error occurred while submitting the form. Please try again.");
+      }
+    } else {
+      alert("Please fill out all mandatory fields.");
+    }
+  };
+
+  return (
+    <Box
+      sx={{
+        padding: 3,
+        backgroundColor: "#fff",
+        borderRadius: "8px",
+        width: "100%",
+        maxWidth: "600px",
+        margin: "auto",
+      }}
+    >
+      <Typography variant="h6" sx={{ mb: 3, textAlign: "center" }}>
+        Add New Element
+      </Typography>
+
+      <Grid container spacing={2}>
+        {/* Form fields remain the same */}
+        <Grid item xs={12}>
+          <TextField
+            label="Asset Name"
+            variant="outlined"
+            fullWidth
+            value={formData.name}
+            onChange={handleInputChange("name")}
+            error={errors.name}
+            helperText={errors.name ? "Asset Name is required" : ""}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={6}>
+          <TextField
+            label="Value"
+            variant="outlined"
+            fullWidth
+            value={formData.value}
+            onChange={handleInputChange("value")}
+            error={errors.value}
+            helperText={errors.value ? "Value is required" : ""}
+          />
+        </Grid>
+
+        <Grid item xs={12}>
+          <TextField
+            label="Description"
+            variant="outlined"
+            fullWidth
+            value={formData.description}
+            onChange={handleInputChange("description")}
+            error={errors.description}
+            helperText={errors.description ? "Description is required" : ""}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={6}>
+          <FormControl variant="outlined" fullWidth>
+            <InputLabel>Sub Category</InputLabel>
+            <Select
+              value={subCategory}
+              onChange={handleSubCategoryChange}
+              label="Sub Category"
+            >
+              <MenuItem value="Sub Category" disabled>
+                Sub Category
+              </MenuItem>
+              <MenuItem value="Electronics">Electronics</MenuItem>
+              <MenuItem value="Mechanics">Tools & Instruments</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+
+        <Grid item xs={12} sm={6}>
+          <FormControl variant="outlined" fullWidth>
+            <InputLabel>Category</InputLabel>
+            <Select
+              value={category}
+              onChange={handleCategoryChange}
+              label="Category"
+            >
+              <MenuItem value="Category" disabled>
+                Category
+              </MenuItem>
+              <MenuItem value="Asset">Asset</MenuItem>
+              <MenuItem value="Component">Component</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+
+        <Grid item xs={12} sm={6}>
+          <TextField
+            label="Manufacturer"
+            variant="outlined"
+            fullWidth
+            value={formData.manufacturer}
+            onChange={handleInputChange("manufacturer")}
+            error={errors.manufacturer}
+            helperText={errors.manufacturer ? "Manufacturer is required" : ""}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={6}>
+          <TextField
+            label="Location"
+            variant="outlined"
+            fullWidth
+            value={formData.location}
+            onChange={handleInputChange("location")}
+            error={errors.location}
+            helperText={errors.location ? "Location is required" : ""}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={6}>
+          <TextField
+            label="Package Box"
+            variant="outlined"
+            fullWidth
+            value={formData.package_box}
+            onChange={handleInputChange("package_box")}
+            error={errors.package_box}
+            helperText={errors.package_box ? "Package Box is required" : ""}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={6}>
+          <TextField
+            label="MPN"
+            variant="outlined"
+            fullWidth
+            value={formData.mpn}
+            onChange={handleInputChange("mpn")}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={6}>
+          <TextField
+            label="SAP NO"
+            variant="outlined"
+            fullWidth
+            value={formData.sap_no}
+            onChange={handleInputChange("sap_no")}
+            error={errors.sap_no}
+            helperText={errors.sap_no ? "SAP NO is required" : ""}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={6}>
+          <TextField
+            label="Stock"
+            variant="outlined"
+            fullWidth
+            value={formData.stock}
+            onChange={handleInputChange("stock")}
+            error={errors.stock}
+            helperText={errors.stock ? "Stock is required" : ""}
+          />
+        </Grid>
+      </Grid>
+
+      {/* Save Button */}
+      <Box textAlign="center" mt={3}>
+        <Button
+          variant="contained"
+          color="primary"
+          size="large"
+          onClick={handleSubmit}
+          sx={{ width: "100%", maxWidth: "200px" }}
+        >
+          Save
+        </Button>
+      </Box>
+    </Box>
+  );
+};
+
+export default AddElement;
+
+
+Light Keyboard	052	Hp Keyboard with led Light	Tools and Instruments	Hp	Emerging Technology	C33SB2	B45A23	136497	15		
+
+
+
+//this is Available form old renning code
+//latest code
+import React, { useState, useEffect } from "react";
+import {
+  Grid,
+  Modal,
+  Box,
+  TextField,
+  Button,
+  IconButton,
+  Typography,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import { requestItem } from "../../../Service/services";
+
+const Available = ({ open, handleClose, data, getAllData }) => {
+  const [formData, setFormData] = useState(data);
+  const [availableForm, setAvailableForm] = useState({
+    userName: sessionStorage.getItem("Name"),
+  });
+  const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    setFormData(data);
+  }, [data]);
+
+  const handleChange = (ProductItem) => {
+    setAvailableForm({
+      ...availableForm,
+      [ProductItem.name]: ProductItem.value,
+    });
+  };
+
+  const validate = () => {
+    let tempErrors = {};
+
+    if (
+      !availableForm.quantityRequested ||
+      availableForm.quantityRequested < 1
+    ) {
+      tempErrors.quantityRequested = "Quantity requested must be at least 1";
+    } else if (availableForm.quantityRequested > formData?.stock) {
+      tempErrors.quantityRequested =
+        "Requested quantity exceeds available stock";
+    }
+
+    if (!availableForm.projectName)
+      tempErrors.projectName = "Project name is required";
+    if (!availableForm.remark) tempErrors.remark = "Remark is required";
+
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  };
+
+  const handleSave = async () => {
+    if (!validate()) return;
+
+    try {
+      const dataToUpload = { id: data.id, ...availableForm };
+      console.log("formdata is ", dataToUpload);
+      await requestItem(dataToUpload);
+      handleClose();
+      alert("Request added successfully!");
+
+      // Call the parent function to fetch updated data
+      getAllData();
+    } catch (error) {
+      console.error("Error updating item:", error);
+    }
+  };
+
+  return (
+    <Modal open={open} onClose={handleClose}>
+      <Box
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          bgcolor: "white",
+          boxShadow: 24,
+          p: 4,
+          width: "60%",
+          borderRadius: 3,
+        }}
+      >
+        <Typography variant="h6" mb={2}>
+          Issue Item
+        </Typography>
+        <IconButton
+          onClick={handleClose}
+          sx={{
+            position: "absolute",
+            top: 8,
+            right: 8,
+            backgroundColor: "#f44336",
+            color: "#fff",
+            "&:hover": { backgroundColor: "#d32f2f" },
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Box sx={{ mb: 3 }}>
+              <Typography
+                variant="h6"
+                sx={{ fontWeight: "bold", color: "primary.main" }}
+              >
+                Component Name: {formData?.name}
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{ color: "text.secondary", marginTop: 1 }}
+              >
+                Value: {formData?.value}
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{ color: "text.primary", marginTop: 1 }}
+              >
+                Specification: {formData?.description}
+              </Typography>
+            </Box>
+            <TextField
+              name="stock"
+              label="Requested Quantity"
+              value={availableForm?.quantityRequested}
+              onChange={(e) =>
+                handleChange({
+                  name: "quantityRequested",
+                  value: e.target.value,
+                })
+              }
+              error={!!errors.quantityRequested}
+              helperText={errors.quantityRequested}
+              sx={{ mb: 2, width: "100%" }}
+              required
+            />
+            <TextField
+              name="projectName"
+              label="Project Name"
+              value={availableForm?.projectName}
+              onChange={(e) =>
+                handleChange({ name: "projectName", value: e.target.value })
+              }
+              error={!!errors.projectName}
+              helperText={errors.projectName}
+              required
+              sx={{ mb: 2, width: "100%" }}
+            />
+            <TextField
+              name="Remark"
+              label="Remark"
+              value={availableForm?.remark}
+              onChange={(e) =>
+                handleChange({ name: "remark", value: e.target.value })
+              }
+              error={!!errors.remark}
+              helperText={errors.remark}
+              sx={{ mb: 2, width: "100%" }}
+              required
+            />
+          </Grid>
+        </Grid>
+
+        <Box display="flex" justifyContent="space-between" mt={2}>
+          <Button variant="contained" color="primary" onClick={handleSave}>
+            Save
+          </Button>
+        </Box>
+      </Box>
+    </Modal>
+  );
+};
+
+export default Available;
+
+
