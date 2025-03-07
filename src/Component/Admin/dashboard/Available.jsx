@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { requestItem } from "../../../Service/services";
+import { useNavigate } from "react-router-dom";
 
 const Available = ({ open, handleClose, data, getAllData }) => {
   const [formData, setFormData] = useState(data);
@@ -19,6 +20,7 @@ const Available = ({ open, handleClose, data, getAllData }) => {
     returnDate: "", // New return date field
   });
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.log("Data received in Available modal:", data);
@@ -82,7 +84,6 @@ const Available = ({ open, handleClose, data, getAllData }) => {
       await requestItem(dataToUpload);
       handleClose();
       alert("Request added successfully!");
-      getAllData();
     } catch (error) {
       console.error("Error updating item:", error);
     }

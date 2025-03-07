@@ -30,7 +30,6 @@ const AddElement = ({ handleClose, getAllData }) => {
     stock: "",
     isReturnable: false, // Default to false
   });
-
   const [errors, setErrors] = useState({
     name: false,
     description: false,
@@ -100,9 +99,9 @@ const AddElement = ({ handleClose, getAllData }) => {
     return valid;
   };
 
-  useEffect(() => {
-    getAllData();
-  }, []);
+  // useEffect(() => {
+  //   getAllData();
+  // }, []);
 
   const handleSubmit = async () => {
     if (isFormValid()) {
@@ -128,7 +127,7 @@ const AddElement = ({ handleClose, getAllData }) => {
         if (!response.ok) {
           throw new Error("Failed to submit the form");
         }
-        getAllData();
+      
         handleClose();
       } catch (error) {
         console.error("Error submitting form:", error);

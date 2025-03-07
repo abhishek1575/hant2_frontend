@@ -13,6 +13,7 @@ import {
   Typography,
   Button,
 } from "@mui/material";
+import { getAllData } from "../Service/DashboardService";
 
 const DeletedItemsTable = ({ open, onClose }) => {
   const [deletedItems, setDeletedItems] = useState([]);
@@ -75,6 +76,7 @@ const DeletedItemsTable = ({ open, onClose }) => {
         setDeletedItems((prevItems) =>
           prevItems.filter((item) => item.id !== itemId)
         );
+      
       } else {
         console.error("Undo failed:", responseData); // Log server response
       }

@@ -38,7 +38,6 @@ const HistoryCards = ({ getAllData, handleClose, data }) => {
       console.error("Error fetching requests:", err);
       setError("No Request Available.");
     }
-    getAllData();
   };
 
   useEffect(() => {
@@ -90,7 +89,7 @@ const HistoryCards = ({ getAllData, handleClose, data }) => {
         "Error occurred while approving the request. Please try again later."
       );
     }
-    getAllData();
+  
   };
 
   // Deny request handler

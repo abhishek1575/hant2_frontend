@@ -65,6 +65,7 @@ const Dashboard2 = () => {
 
   const handleCloseModal = () => {
     setOpenModal(false);
+   
   };
 
   // Open User History Modal
@@ -154,9 +155,17 @@ const Dashboard2 = () => {
   const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
   const handleMenuClose = () => setAnchorEl(null);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  // Fetch data on component mount and when modals are closed refresh data
+ useEffect(() => {
+   fetchData();
+ }, [
+   openEditForm,
+   openAvailableForm,
+   openHistoryCards,
+   openModal,
+   openDeletedModel,
+   open,
+ ]);
 
   // change password
   const handleProfileMenuOpen = (event) => {
@@ -439,9 +448,8 @@ const Dashboard2 = () => {
           <AddElement
             handleClose={() => {
               handleClose("AddElement");
-              getAllData(); // Refresh dashboard data automatically
+             
             }}
-            getAllData={getAllData}
           />
         </Box>
       </Modal>
@@ -485,7 +493,6 @@ const Dashboard2 = () => {
           {/* Add the form from AddElement */}
           <HistoryCards
             handleClose={() => handleClose("AddElement")}
-            getAllData={getAllData}
             data={selectedItem}
           />
         </Box>
@@ -494,13 +501,13 @@ const Dashboard2 = () => {
         open={openEditForm}
         data={selectedItem}
         handleClose={() => handleClose("EditForm")}
-        getAllData={getAllData}
+
       />
       <Available
         open={openAvailableForm}
         data={selectedItem}
         handleClose={() => handleClose("AvailableForm")}
-        getAllData={getAllData}
+
       />
 
       <RequestHistoryModal open={openModal} handleClose={handleCloseModal} />
