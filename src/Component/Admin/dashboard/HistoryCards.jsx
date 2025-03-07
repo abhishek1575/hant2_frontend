@@ -36,7 +36,7 @@ const HistoryCards = ({ getAllData, handleClose, data }) => {
       setRequests(response.data);
     } catch (err) {
       console.error("Error fetching requests:", err);
-      setError("Failed to fetch data. Please try again later.");
+      setError("No Request Available.");
     }
     getAllData();
   };

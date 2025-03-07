@@ -19,6 +19,7 @@ import ItemTable from "../../../Components/ItemTable";
 import { applyFilters } from "../../../Components/utils/Filters";
 import { fetchNewRequests } from "../../../Service/DashboardService";
 import HistoryTable from "../../../Components/HistoryTable";
+import DeletedItemsTable from "../../../Components/DeletedItemsTable";
 
 const Dashboard2 = () => {
   const navigate = useNavigate();
@@ -45,6 +46,7 @@ const Dashboard2 = () => {
   const [openModal, setOpenModal] = useState(false);
   const [hasNewRequests, setHasNewRequests] = useState(false);
   const [openHistoryModal, setOpenHistoryModal] = useState(false);
+  const [openDeletedModel, setDeletedModel] = useState(false);
   // Fetch data
   const fetchData = async () => {
     try {
@@ -121,7 +123,8 @@ const Dashboard2 = () => {
     handleMenuCloseLogout();
   };
 
-  //Notification for new requests
+  //Notification for new requests/ Function to fetch new requests and update state
+  // Use effect to check for new requests every 10 seconds
   useEffect(() => {
     const fetchData = async () => {
       const result = await fetchNewRequests();
@@ -129,9 +132,9 @@ const Dashboard2 = () => {
     };
 
     fetchData(); // Fetch on component mount
-    // const interval = setInterval(fetchData, 5000); // Poll every 5 seconds
-    // return () => clearInterval(interval); // Cleanup on unmount
+   
   }, []);
+
 
   // Handle Modal Open and Close
   const handleOpen = () => setOpen(true);
@@ -150,11 +153,6 @@ const Dashboard2 = () => {
   // Menu Item Selection
   const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
   const handleMenuClose = () => setAnchorEl(null);
-
-  // const handleCategorySelect = (category) => {
-  //   setSelectedCategory(category);
-  //   handleMenuClose();
-  // };
 
   useEffect(() => {
     fetchData();
@@ -283,7 +281,11 @@ const Dashboard2 = () => {
             </div>
 
             {/* Right Section */}
+
             <div>
+              <IconButton color="inherit" onClick={() => setDeletedModel(true)}>
+                <ViewListIcon />
+              </IconButton>
               <IconButton color="inherit">
                 <Badge color="error" variant="dot" invisible={!hasNewRequests}>
                   <NotificationsIcon />
@@ -377,9 +379,6 @@ const Dashboard2 = () => {
             <div>
               <IconButton color="primary">
                 <FilterListIcon />
-              </IconButton>
-              <IconButton color="primary">
-                <ViewListIcon />
               </IconButton>
             </div>
           </div>
@@ -537,6 +536,11 @@ const Dashboard2 = () => {
           <HistoryTable onClose={handleCloseHistoryModal} />
         </Box>
       </Modal>
+      {/* Deleted Items Table Component */}
+      <DeletedItemsTable
+        open={openDeletedModel}
+        onClose={() => setDeletedModel(false)}
+      />
     </div>
   );
 };

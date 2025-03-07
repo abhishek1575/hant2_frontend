@@ -84,6 +84,7 @@ export const fetchNewRequests = async () => {
 };
 
 
+
 export const getHistoryByUserId = async (userId, token) => {
   try {
     const response = await fetch(
