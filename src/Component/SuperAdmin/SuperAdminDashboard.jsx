@@ -16,7 +16,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import ViewListIcon from "@mui/icons-material/ViewList";
-import ceinsys_logo from "../Image/ceinsys_logo.png";
+import ceinsys_logo from "../Image/cstechai_transparent.png";
 import { useNavigate } from "react-router-dom";
 import { getAllData, changePassword } from "../../Service/DashboardService";
 import ChangePasswordModal from "../../Components/ChangePasswordModal";

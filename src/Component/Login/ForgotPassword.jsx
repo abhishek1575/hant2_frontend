@@ -12,7 +12,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import ceinsys_logo from "../Image/ceinsys_logo.png"; // Replace with the logo for your tool
+import ceinsys_logo from "../Image/cstechai_transparent.png"; // Replace with the logo for your tool
 import ForgotPasswordServices from "../../Service/ForgotPasswordServices"; // Import the service
 
 const ForgotPassword = () => {
@@ -40,6 +40,7 @@ const ForgotPassword = () => {
       } else if (password !== confirmPassword) {
         toast.warning("Passwords do not match.");
       } else {
+        console.log("Forgot Password jsx file email:", email, password);
         await ForgotPasswordServices.resetPassword(email, password); // Call the API service
         toast.success("Password changed successfully!");
         setTimeout(() => {

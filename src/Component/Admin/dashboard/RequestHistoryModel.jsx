@@ -1,118 +1,3 @@
-// import React, { useState, useEffect } from "react";
-// import {
-//   Modal,
-//   Box,
-//   Typography,
-//   Button,
-//   Table,
-//   TableBody,
-//   TableCell,
-//   TableContainer,
-//   TableHead,
-//   TableRow,
-//   Paper,
-// } from "@mui/material";
-// import Config from "../../../Service/Config";
-
-// const RequestHistoryModal = ({ open, handleClose }) => {
-//   const [requests, setRequests] = useState([]);
-
-//   // Fetch data from API
-//   useEffect(() => {
-//     if (open) {
-//       const token = sessionStorage.getItem("token");
-//       // fetch(`${Config.API_BASE_URL}item/getAllRequest`, {
-//         fetch(`${Config.API_BASE_URL}request/getAllRequest`, {
-//         method: "GET",
-//         headers: {
-//           "Content-Type": "application/json",
-//           Authorization: `Bearer ${token}`,
-//         },
-//       })
-//         .then((response) => response.json())
-//         .then((data) => {
-//           setRequests(data);
-//         })
-//         .catch((error) => console.error("Error fetching data:", error));
-//     }
-//   }, [open]);
-
-//   return (
-//     <Modal
-//       open={open}
-//       onClose={(e, reason) => reason === "backdropClick" && e.stopPropagation()}
-//     >
-//       <Box
-//         sx={{
-//           position: "absolute",
-//           top: "50%",
-//           left: "50%",
-//           transform: "translate(-50%, -50%)",
-//           width: "80%",
-//           bgcolor: "background.paper",
-//           boxShadow: 24,
-//           p: 4,
-//           borderRadius: 2,
-//         }}
-//       >
-//         <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
-//           Request History
-//         </Typography>
-//         <TableContainer
-//           component={Paper}
-//           sx={{ maxHeight: "500px", overflow: "auto" }}
-//         >
-//           <Table>
-//             <TableHead>
-//               <TableRow>
-//                 <TableCell>ID</TableCell>
-//                 <TableCell>Item Name</TableCell>
-//                 <TableCell>Value</TableCell>
-//                 <TableCell>Specification</TableCell>
-//                 <TableCell>Quantity Requested</TableCell>
-//                 <TableCell>Approval Status</TableCell>
-//                 <TableCell>Requested By</TableCell>
-//                 <TableCell>Project Name</TableCell>
-//                 <TableCell>Remark</TableCell>
-//                 <TableCell>Requested At</TableCell>
-//               </TableRow>
-//             </TableHead>
-//             <TableBody>
-//               {requests.map((request) => (
-//                 <TableRow key={request.id}>
-//                   <TableCell>{request.id}</TableCell>
-//                   <TableCell>{request.item.name}</TableCell>
-//                   <TableCell>{request.item.value}</TableCell>
-//                   <TableCell>{request.item.description}</TableCell>
-//                   <TableCell>{request.quantityRequest}</TableCell>
-//                   <TableCell>{request.approvalStatus}</TableCell>
-//                   <TableCell>{request.userName}</TableCell>
-//                   <TableCell>{request.projectName}</TableCell>
-//                   <TableCell>{request.remark}</TableCell>
-//                   <TableCell>
-//                     {new Date(request.localDateTime).toLocaleString()}
-//                   </TableCell>
-//                 </TableRow>
-//               ))}
-//             </TableBody>
-//           </Table>
-//         </TableContainer>
-//         <Button
-//           variant="contained"
-//           color="secondary"
-//           onClick={handleClose}
-//           sx={{ mt: 2 }}
-//         >
-//           Cancel
-//         </Button>
-//       </Box>
-//     </Modal>
-//   );
-// };
-
-// export default RequestHistoryModal;
-
-
 import React, { useState, useEffect } from "react";
 import {
   Modal,
@@ -128,8 +13,31 @@ import {
   Paper,
   TableSortLabel,
   TextField,
+  CircularProgress,
+  Alert,
+  useTheme,
+  useMediaQuery,
+  Card,
+  CardContent,
+  Chip,
+  IconButton,
+  InputAdornment,
 } from "@mui/material";
+import { Search as SearchIcon, Close as CloseIcon } from "@mui/icons-material";
 import Config from "../../../Service/Config";
+
+const getStatusChipColor = (status) => {
+  switch (status.toLowerCase()) {
+    case "approved":
+      return "success";
+    case "rejected":
+      return "error";
+    case "pending":
+      return "warning";
+    default:
+      return "default";
+  }
+};
 
 const RequestHistoryModal = ({ open, handleClose }) => {
   const [requests, setRequests] = useState([]);
@@ -139,6 +47,9 @@ const RequestHistoryModal = ({ open, handleClose }) => {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   useEffect(() => {
     if (open) {
@@ -166,7 +77,7 @@ const RequestHistoryModal = ({ open, handleClose }) => {
       }
       const data = await response.json();
       setRequests(data);
-      setFilteredRequests(data); // Initialize filteredRequests with all data
+      setFilteredRequests(data);
     } catch (error) {
       console.error("Error fetching data:", error);
       setError(error.message);
@@ -180,7 +91,7 @@ const RequestHistoryModal = ({ open, handleClose }) => {
     setOrder(isAscending ? "desc" : "asc");
     setOrderBy(property);
 
-    const sortedData = [...requests].sort((a, b) => {
+    const sortedData = [...filteredRequests].sort((a, b) => {
       let valueA = a[property];
       let valueB = b[property];
 
@@ -198,29 +109,20 @@ const RequestHistoryModal = ({ open, handleClose }) => {
       }
     });
 
-    setRequests(sortedData);
-    setFilteredRequests(
-      sortedData.filter((request) => filterData(request, search))
-    );
+    setFilteredRequests(sortedData);
   };
 
   const filterData = (request, searchTerm) => {
-    const lowerSearch = searchTerm.trim().toLowerCase(); // Trim and lowercase the search term
-    return (
-      request.id.toString().toLowerCase().includes(lowerSearch) ||
-      request.item.name.toLowerCase().includes(lowerSearch) ||
-      request.item.value.toString().toLowerCase().includes(lowerSearch) ||
-      request.item.description.toLowerCase().includes(lowerSearch) ||
-      request.quantityRequest.toString().toLowerCase().includes(lowerSearch) ||
-      request.approvalStatus.toLowerCase().includes(lowerSearch) ||
-      request.userName.toLowerCase().includes(lowerSearch) ||
-      request.projectName.toLowerCase().includes(lowerSearch) ||
-      request.remark.toLowerCase().includes(lowerSearch) ||
-      new Date(request.localDateTime)
-        .toLocaleString()
-        .toLowerCase()
-        .includes(lowerSearch)
-    );
+    const lowerSearch = searchTerm.trim().toLowerCase();
+    if (!lowerSearch) return true;
+    return Object.values(request).some((value) => {
+      if (typeof value === "object" && value !== null) {
+        return Object.values(value).some((nestedValue) =>
+          String(nestedValue).toLowerCase().includes(lowerSearch)
+        );
+      }
+      return String(value).toLowerCase().includes(lowerSearch);
+    });
   };
 
   const handleSearch = (event) => {
@@ -230,105 +132,164 @@ const RequestHistoryModal = ({ open, handleClose }) => {
     setFilteredRequests(filtered);
   };
 
+  const renderContent = () => {
+    if (loading) {
+      return (
+        <Box sx={{ display: "flex", justifyContent: "center", my: 4 }}>
+          <CircularProgress />
+        </Box>
+      );
+    }
+
+    if (error) {
+      return (
+        <Alert severity="error" sx={{ my: 2 }}>
+          {error}
+        </Alert>
+      );
+    }
+
+    if (filteredRequests.length === 0) {
+      return (
+        <Typography sx={{ textAlign: "center", my: 4, color: "text.secondary" }}>
+          No request history found.
+        </Typography>
+      );
+    }
+
+    if (isMobile) {
+      return (
+        <Box sx={{ maxHeight: "60vh", overflowY: "auto", p: 0.5 }}>
+          {filteredRequests.map((request) => (
+            <Card key={request.id} sx={{ mb: 2, boxShadow: 3 }}>
+              <CardContent>
+                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1.5 }}>
+                  <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
+                    {request.item.name}
+                  </Typography>
+                  <Chip
+                    label={request.approvalStatus}
+                    color={getStatusChipColor(request.approvalStatus)}
+                    size="small"
+                  />
+                </Box>
+                <Typography variant="body2" color="text.secondary">
+                  <strong>Requested by:</strong> {request.userName} on <strong>Project:</strong> {request.projectName}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  <strong>Quantity:</strong> {request.quantityRequest}
+                </Typography>
+                 <Typography variant="body2" color="text.secondary">
+                  <strong>Remark:</strong> {request.remark}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                  {new Date(request.localDateTime).toLocaleString()}
+                </Typography>
+              </CardContent>
+            </Card>
+          ))}
+        </Box>
+      );
+    }
+
+    return (
+      <TableContainer component={Paper} sx={{ maxHeight: "60vh" }}>
+        <Table stickyHeader>
+          <TableHead>
+            <TableRow sx={{ "& .MuiTableCell-head": { backgroundColor: theme.palette.grey[200], fontWeight: "bold" } }}>
+              <TableCell>
+                <TableSortLabel active={orderBy === "id"} direction={order} onClick={() => handleSort("id")}>ID</TableSortLabel>
+              </TableCell>
+              <TableCell>Item Name</TableCell>
+              <TableCell>Value</TableCell>
+              <TableCell>Specification</TableCell>
+              <TableCell>Qty Requested</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Requested By</TableCell>
+              <TableCell>Project</TableCell>
+              <TableCell>Remark</TableCell>
+              <TableCell>Approved By</TableCell>
+              <TableCell>
+                <TableSortLabel active={orderBy === "localDateTime"} direction={order} onClick={() => handleSort("localDateTime")}>
+                  Requested At
+                </TableSortLabel>
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredRequests.map((request, index) => (
+              <TableRow key={request.id} sx={{ "&:nth-of-type(odd)": { backgroundColor: theme.palette.action.hover } }}>
+                <TableCell>{request.id}</TableCell>
+                <TableCell>{request.item.name}</TableCell>
+                <TableCell>{request.item.value}</TableCell>
+                <TableCell>{request.item.description}</TableCell>
+                <TableCell>{request.quantityRequest}</TableCell>
+                <TableCell>
+                  <Chip label={request.approvalStatus} color={getStatusChipColor(request.approvalStatus)} size="small" />
+                </TableCell>
+                <TableCell>{request.userName}</TableCell>
+                <TableCell>{request.projectName}</TableCell>
+                <TableCell>{request.remark}</TableCell>
+                <TableCell>{request.approvedBy || "N/A"}</TableCell>
+                <TableCell>{new Date(request.localDateTime).toLocaleString()}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    );
+  };
+
   return (
-    <Modal
-      open={open}
-      onClose={(e, reason) => reason === "backdropClick" && e.stopPropagation()}
-    >
+    <Modal open={open} onClose={handleClose} closeAfterTransition>
       <Box
         sx={{
           position: "absolute",
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: "80%",
+          width: { xs: "95%", md: "90%" },
           maxWidth: "1200px",
+          maxHeight: "90vh",
           bgcolor: "background.paper",
           boxShadow: 24,
-          p: 4,
-          borderRadius: 2,
+          borderRadius: 3,
+          p: { xs: 2, sm: 3, md: 4 },
+          display: "flex",
+          flexDirection: "column",
         }}
       >
-        <Typography variant="h6" sx={{ mb: 2 }}>
-          Request History
-        </Typography>
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+          <Typography variant="h5" component="h2" sx={{ fontWeight: "bold" }}>
+            Request History
+          </Typography>
+          <IconButton onClick={handleClose}>
+            <CloseIcon />
+          </IconButton>
+        </Box>
 
         <TextField
-          label="Search"
+          label="Search Requests"
           variant="outlined"
-          sx={{ mb: 2, width: "100%", maxWidth: "400px" }}
+          sx={{ mb: 2 }}
           value={search}
           onChange={handleSearch}
-          placeholder="Search by ID, Item Name, Value, etc."
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
         />
 
-        {loading && <Typography>Loading...</Typography>}
-        {error && <Typography color="error">{error}</Typography>}
+        {renderContent()}
 
-        <TableContainer
-          component={Paper}
-          sx={{ maxHeight: "500px", overflow: "auto" }}
-        >
-          <Table stickyHeader>
-            <TableHead>
-              <TableRow>
-                <TableCell>
-                  <TableSortLabel
-                    active={orderBy === "id"}
-                    direction={orderBy === "id" ? order : "asc"}
-                    onClick={() => handleSort("id")}
-                  >
-                    ID
-                  </TableSortLabel>
-                </TableCell>
-                <TableCell>Item Name</TableCell>
-                <TableCell>Value</TableCell>
-                <TableCell>Specification</TableCell>
-                <TableCell>Quantity Requested</TableCell>
-                <TableCell>Approval Status</TableCell>
-                <TableCell>Requested By</TableCell>
-                <TableCell>Project Name</TableCell>
-                <TableCell>Remark</TableCell>
-                <TableCell>
-                  <TableSortLabel
-                    active={orderBy === "localDateTime"}
-                    direction={orderBy === "localDateTime" ? order : "asc"}
-                    onClick={() => handleSort("localDateTime")}
-                  >
-                    Requested At
-                  </TableSortLabel>
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredRequests.map((request) => (
-                <TableRow key={request.id}>
-                  <TableCell>{request.id}</TableCell>
-                  <TableCell>{request.item.name}</TableCell>
-                  <TableCell>{request.item.value}</TableCell>
-                  <TableCell>{request.item.description}</TableCell>
-                  <TableCell>{request.quantityRequest}</TableCell>
-                  <TableCell>{request.approvalStatus}</TableCell>
-                  <TableCell>{request.userName}</TableCell>
-                  <TableCell>{request.projectName}</TableCell>
-                  <TableCell>{request.remark}</TableCell>
-                  <TableCell>
-                    {new Date(request.localDateTime).toLocaleString()}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={handleClose}
-          sx={{ mt: 2 }}
-        >
-          Cancel
-        </Button>
+        <Box sx={{ mt: 3, display: "flex", justifyContent: "flex-end" }}>
+          <Button variant="outlined" color="secondary" onClick={handleClose}>
+            Close
+          </Button>
+        </Box>
       </Box>
     </Modal>
   );

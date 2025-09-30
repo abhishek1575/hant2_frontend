@@ -1,26 +1,31 @@
 import React, { useEffect, useState } from "react";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  TableContainer,
-  Paper,
   Button,
   Typography,
   Box,
+  Grid,
+  Card,
+  CardContent,
+  CardActions,
+  CardHeader,
+  Divider,
+  Stack,
+  CircularProgress,
+  Avatar,
 } from "@mui/material";
 import axios from "axios";
 import Config from "../../../Service/Config";
+import PersonIcon from '@mui/icons-material/Person';
+import EventIcon from '@mui/icons-material/Event';
+import InboxIcon from '@mui/icons-material/Inbox';
+import { blue } from '@mui/material/colors';
 
-const HistoryCards = ({ getAllData, handleClose, data }) => {
-  const [requests, setRequests] = useState([]);
-  const [error, setError] = useState(null);
-  const [fromData, setFormData] = useState(data);
+const HistoryCards = ({ handleClose }) => {
+  const [requests, setRequests] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Fetch data on component mount
   const fetchRequests = async () => {
+    setLoading(true);
     const token = sessionStorage.getItem("token");
     try {
       const response = await axios.get(
@@ -32,353 +37,132 @@ const HistoryCards = ({ getAllData, handleClose, data }) => {
           },
         }
       );
-
       setRequests(response.data);
     } catch (err) {
       console.error("Error fetching requests:", err);
-      setError("No Request Available.");
+      setRequests([]); // Set to empty array on error
     }
+    setLoading(false);
   };
-
-  useEffect(() => {
-    setFormData(data); // Update formData when data changes
-  }, [data]);
 
   useEffect(() => {
     fetchRequests();
   }, []);
 
-  if (error) {
-    return <Typography color="error">{error}</Typography>;
-  }
-
-  // Approve request handler
-  const handleApprove = async (id) => {
+  const handleRequestAction = async (action, id) => {
     const token = sessionStorage.getItem("token");
     const userName = sessionStorage.getItem("Name");
+    const isApprove = action === 'approve';
+
+    const url = isApprove
+      ? `${Config.API_BASE_URL}request/approved?requestId=${id}&adminName=${encodeURIComponent(userName)}`
+      : `${Config.API_BASE_URL}request/deleteRequest?requestId=${id}&adminName=${encodeURIComponent(userName)}`;
+
+    const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+    };
 
     try {
-      const response = await axios.post(
-        `${
-          Config.API_BASE_URL
-        }request/approved?requestId=${id}&adminName=${encodeURIComponent(
-          userName
-        )}`,
-        {},
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = isApprove 
+        ? await axios.post(url, {}, config)
+        : await axios.delete(url, config);
 
       if (response.status === 200) {
-        alert("Request approved successfully!");
-
-        // Optimistically update the state
-        setRequests((prevRequests) =>
-          prevRequests.filter((request) => request.id !== id)
-        );
+        alert(`Request ${isApprove ? 'approved' : 'denied'} successfully!`);
+        setRequests((prevRequests) => prevRequests.filter((request) => request.id !== id));
       } else {
-        alert("Failed to approve request. Please try again.");
+        alert(`Failed to ${action} request. Please try again.`);
       }
     } catch (error) {
-      console.error("Error approving the request:", error);
-      alert(
-        "Error occurred while approving the request. Please try again later."
-      );
-    }
-  
-  };
-
-  // Deny request handler
-  const handleDeny = async (id) => {
-    const token = sessionStorage.getItem("token");
-    const userName = sessionStorage.getItem("Name"); // Fetch adminName from sessionStorage
-
-    try {
-      const response = await axios.delete(
-        `${
-          Config.API_BASE_URL
-        }request/deleteRequest?requestId=${id}&adminName=${encodeURIComponent(
-          userName
-        )}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        alert("Request denied successfully!");
-
-        // Optimistically update the state
-        setRequests((prevRequests) =>
-          prevRequests.filter((request) => request.id !== id)
-        );
-      } else {
-        alert("Failed to deny request. Please try again.");
-      }
-    } catch (error) {
-      console.error("Error denying the request:", error);
-      alert(
-        "Error occurred while denying the request. Please try again later."
-      );
+      console.error(`Error ${action} the request:`, error);
+      alert(`Error occurred while ${action} the request. Please try again later.`);
     }
   };
+
+  if (loading) {
+    return <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}><CircularProgress /></Box>;
+  }
+
+  if (!requests || requests.length === 0) {
+    return (
+      <Box sx={{ textAlign: 'center', p: 4, mt: 4 }}>
+        <InboxIcon sx={{ fontSize: 80, color: 'grey.300' }} />
+        <Typography variant="h5" color="text.secondary" sx={{mt: 2}}>
+          No Pending Requests
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          All requests have been handled. Great job!
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
-    <Paper style={{ padding: "20px" }}>
-      <TableContainer>
-        <Table stickyHeader>
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Value</TableCell>
-              <TableCell>Description</TableCell>
-              <TableCell>Quantity Requested</TableCell>
-              <TableCell>Date</TableCell>
-              <TableCell>User Name</TableCell>
-              <TableCell>Project Name</TableCell>
-              <TableCell>Remark</TableCell>
-              <TableCell>Approved</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {requests.map((request) => (
-              <TableRow key={request.id}>
-                <TableCell>{request.item.name}</TableCell>
-                <TableCell>{request.item.value}</TableCell>
-                <TableCell>{request.item.description}</TableCell>
-                <TableCell>{request.quantityRequest}</TableCell>
-                <TableCell>
-                  {new Date(request.localDateTime).toLocaleString()}
-                </TableCell>
-                <TableCell>{request.userName}</TableCell>
-                <TableCell>{request.projectName}</TableCell>
-                <TableCell>{request.remark}</TableCell>
-                <TableCell>{request.approved ? "Yes" : "No"}</TableCell>
-                <TableCell>
-                  <Box display="flex" gap={1}>
-                    <Button
-                      variant="contained"
-                      color="success"
-                      onClick={() => handleApprove(request.id)}
-                      style={{ width: "100px" }}
-                    >
-                      Approve
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="error"
-                      onClick={() => handleDeny(request.id)}
-                      style={{ width: "100px" }}
-                    >
-                      Deny
-                    </Button>
-                  </Box>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Paper>
+    <Box sx={{ p: { xs: 1, sm: 2 } }}>
+        <Typography variant="h4" component="h1" gutterBottom sx={{mb: 3}}>
+            Pending Requests
+        </Typography>
+        <Grid container spacing={3}>
+        {requests.map((request) => (
+          <Grid item key={request.id} xs={12} sm={6} md={4}>
+            <Card sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100%',
+                borderRadius: 4,
+                transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+                '&:hover': {
+                    transform: 'translateY(-4px)',
+                    boxShadow: 6,
+                }
+            }}>
+              <CardHeader
+                avatar={
+                    <Avatar sx={{ bgcolor: blue[500] }} aria-label="request-type">
+                        {request.item.name.charAt(0)}
+                    </Avatar>
+                }
+                title={request.item.name}
+                subheader={`For Project: ${request.projectName}`}
+                titleTypographyProps={{ fontWeight: 'bold' }}
+              />
+              <CardContent sx={{ flexGrow: 1 }}>
+                <Stack spacing={1.5}>
+                    <Stack direction="row" spacing={1} alignItems="center">
+                        <PersonIcon fontSize="small" color="action" />
+                        <Typography variant="body2" color="text.secondary">{request.userName}</Typography>
+                    </Stack>
+                     <Stack direction="row" spacing={1} alignItems="center">
+                        <EventIcon fontSize="small" color="action" />
+                        <Typography variant="body2" color="text.secondary">{new Date(request.localDateTime).toLocaleDateString()}</Typography>
+                    </Stack>
+                    <Divider sx={{my: 1}} />
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <Typography variant="body2">Quantity Requested:</Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 'bold' }}>{request.quantityRequest}</Typography>
+                    </Box>
+                    <Box>
+                        <Typography variant="body2" sx={{ fontStyle: 'italic', color: 'text.secondary' }}>
+                           {request.remark ? `"${request.remark}"` : 'No remark provided.'}
+                        </Typography>
+                    </Box>
+                </Stack>
+              </CardContent>
+              <Box sx={{flexGrow: 1}} />
+              <Divider />
+              <CardActions sx={{ justifyContent: 'flex-end', p: 2 }}>
+                <Button size="small" color="error" onClick={() => handleRequestAction('deny', request.id)}>Deny</Button>
+                <Button size="small" variant="contained" color="success" onClick={() => handleRequestAction('approve', request.id)}>Approve</Button>
+              </CardActions>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+    </Box>
   );
 };
 
 export default HistoryCards;
-
-// import React, { useEffect, useState } from "react";
-// import {
-//   Table,
-//   TableBody,
-//   TableCell,
-//   TableHead,
-//   TableRow,
-//   TableContainer,
-//   Paper,
-//   Button,
-//   Typography,
-//   Box,
-// } from "@mui/material";
-// import axios from "axios";
-// import Config from "../../../Service/Config";
-
-// const HistoryCards = ({ getAllData, handleClose, data }) => {
-//   const [requests, setRequests] = useState([]);
-//   const [error, setError] = useState(null);
-//   const [fromData, setFormData] = useState(data);
-
-//   // Fetch data on component mount
-//   const fetchRequests = async () => {
-//     const token = sessionStorage.getItem("token");
-//     try {
-//       const response = await axios.get(
-//         // `${Config.API_BASE_URL}item/getAllNonApprovedRequests`,
-//         `${Config.API_BASE_URL}request/getAllNonApprovedRequests`,
-//         {
-//           headers: {
-//             Authorization: `Bearer ${token}`,
-//             "Content-Type": "application/json",
-//           },
-//         }
-//       );
-
-//       setRequests(response.data);
-//     } catch (err) {
-//       console.error("Error fetching requests:", err);
-//       setError("Failed to fetch data. Please try again later.");
-//     }
-//     getAllData();
-//   };
-
-//   useEffect(() => {
-//     setFormData(data); // Update formData when data changes
-//   }, [data]);
-
-//   useEffect(() => {
-//     fetchRequests();
-//   }, []);
-
-//   if (error) {
-//     return <Typography color="error">{error}</Typography>;
-//   }
-
-//   // Approve request handler
-//   const handleApprove = async (id) => {
-//     const token = sessionStorage.getItem("token");
-
-//     try {
-//       const response = await axios.post(
-//         `${Config.API_BASE_URL}request/approved?requestId=${id}`,
-//         {},
-//         {
-//           headers: {
-//             "Content-Type": "application/json",
-//             Authorization: `Bearer ${token}`,
-//           },
-//         }
-//       );
-
-//       if (response.status === 200) {
-//         alert("Request approved successfully!");
-
-//         // Optimistically update the state
-//         setRequests((prevRequests) =>
-//           prevRequests.filter((request) => request.id !== id)
-//         );
-//       } else {
-//         alert("Failed to approve request. Please try again.");
-//       }
-//     } catch (error) {
-//       console.error("Error approving the request:", error);
-//       alert(
-//         "Error occurred while approving the request. Please try again later."
-//       );
-//     }
-//     getAllData();
-//   };
-
-//   // Deny request handler
-//   const handleDeny = async (id) => {
-//     const token = sessionStorage.getItem("token");
-
-//     try {
-//       const response = await axios.delete(
-//         // `${Config.API_BASE_URL}item/deleteRequest?requestId=${id}`,
-//         `${Config.API_BASE_URL}request/deleteRequest?requestId=${id}`,
-//         {
-//           headers: {
-//             "Content-Type": "application/json",
-//             Authorization: `Bearer ${token}`,
-//           },
-//         }
-//       );
-
-//       if (response.status === 200) {
-//         alert("Request denied successfully!");
-
-//         // Optimistically update the state
-//         setRequests((prevRequests) =>
-//           prevRequests.filter((request) => request.id !== id)
-//         );
-//       } else {
-//         alert("Failed to deny request. Please try again.");
-//       }
-//     } catch (error) {
-//       console.error("Error denying the request:", error);
-//       alert(
-//         "Error occurred while denying the request. Please try again later."
-//       );
-//     }
-//   };
-
-//   return (
-//     <Paper style={{ padding: "20px" }}>
-//       <TableContainer>
-//         <Table stickyHeader>
-//           <TableHead>
-//             <TableRow>
-//               {/* <TableCell>Request ID</TableCell> */}
-//               <TableCell>Name</TableCell>
-//               <TableCell>Value</TableCell>
-//               <TableCell>Description</TableCell>
-//               <TableCell>Quantity Requested</TableCell>
-//               <TableCell>Date</TableCell>
-//               <TableCell>User Name</TableCell>
-//               <TableCell>Project Name</TableCell>
-//               <TableCell>Remark</TableCell>
-//               <TableCell>Approved</TableCell>
-//               <TableCell>Actions</TableCell>
-//             </TableRow>
-//           </TableHead>
-//           <TableBody>
-//             {requests.map((request) => (
-//               <TableRow key={request.id}>
-//                 {/* <TableCell>{request.id}</TableCell> */}
-//                 <TableCell>{request.item.name}</TableCell>
-//                 <TableCell>{request.item.value}</TableCell>
-//                 <TableCell>{request.item.description}</TableCell>
-//                 <TableCell>{request.quantityRequest}</TableCell>
-//                 <TableCell>
-//                   {new Date(request.localDateTime).toLocaleString()}
-//                 </TableCell>
-//                 <TableCell>{request.userName}</TableCell>
-//                 <TableCell>{request.projectName}</TableCell>
-//                 <TableCell>{request.remark}</TableCell>
-//                 <TableCell>{request.approved ? "Yes" : "No"}</TableCell>
-//                 <TableCell>
-//                   <Box display="flex" gap={1}>
-//                     <Button
-//                       variant="contained"
-//                       color="success"
-//                       onClick={() => handleApprove(request.id)}
-//                       style={{ width: "100px" }}
-//                     >
-//                       Approve
-//                     </Button>
-//                     <Button
-//                       variant="contained"
-//                       color="error"
-//                       onClick={() => handleDeny(request.id)}
-//                       style={{ width: "100px" }}
-//                     >
-//                       Deny
-//                     </Button>
-//                   </Box>
-//                 </TableCell>
-//               </TableRow>
-//             ))}
-//           </TableBody>
-//         </Table>
-//       </TableContainer>
-//     </Paper>
-//   );
-// };
-
-// export default HistoryCards;

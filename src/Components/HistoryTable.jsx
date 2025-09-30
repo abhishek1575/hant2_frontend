@@ -267,6 +267,11 @@ const HistoryTable = ({ onClose }) => {
                 >
                   Remark
                 </TableCell>
+                <TableCell
+                  style={{ fontWeight: "bold", backgroundColor: "#A8D2EF" }}
+                >
+                  Approved by
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -279,6 +284,7 @@ const HistoryTable = ({ onClose }) => {
                   <TableCell>{history.approvalStatus}</TableCell>
                   <TableCell>{history.localDateTime}</TableCell>
                   <TableCell>{history.remark}</TableCell>
+                  <TableCell>{history.approvedBy}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

@@ -8,6 +8,7 @@ import {
   Paper,
   Button,
   TableContainer,
+  Box,
 } from "@mui/material";
 import {
   headers,
@@ -24,83 +25,125 @@ const ItemTable = ({
   setOpenEditForm,
 }) => {
   return (
-    <Paper
-      sx={{
-        width: "100%",
-        height: "calc(100vh - 150px)", // Adjusted height dynamically
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <TableContainer sx={{ flexGrow: 1, overflow: "auto" }}>
-        <Table stickyHeader>
-          <TableHead>
-            <TableRow>
-              {headers.map((header, index) => (
-                <TableCell
-                  key={index}
-                  sx={{ backgroundColor: "#F8FBFC", fontWeight: "bold" }}
-                >
-                  {header}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-
-          <TableBody>
-            {tableData.map((row, index) => (
-              <TableRow key={row.id}>
-                <TableCell>{index + 1}</TableCell>
-                <TableCell>{row.name}</TableCell>
-                <TableCell>{row.value}</TableCell>
-                <TableCell>{row.description}</TableCell>
-                <TableCell>
-                  {getSubCategoryDisplayName(row.subCategory)}
-                </TableCell>
-                <TableCell>{row.manufacturer}</TableCell>
-                <TableCell>{row.location}</TableCell>
-                <TableCell>{row.package_box}</TableCell>
-                <TableCell>{row.mpn}</TableCell>
-                <TableCell>{row.sap_no}</TableCell>
-                <TableCell>{row.stock}</TableCell>
-                <TableCell>
-                  <Button
-                    variant="contained"
-                    sx={{ textTransform: "none" }}
-                    color={getStockColor(row)}
-                    onClick={() =>
-                      handleStatusClick(
-                        row,
-                        setSelectedItem,
-                        setOpenAvailableForm
-                      )
-                    }
-                  >
-                    {getStockStatusText(row)}
-                  </Button>
-                </TableCell>
-                <TableCell>
-                  <Button
+    <Box sx={{ width: "100%", overflow: "hidden" }}>
+      <Paper
+        sx={{
+          width: "100%",
+          mb: 2,
+          boxShadow: 3,
+          borderRadius: 2,
+        }}
+      >
+        <TableContainer sx={{ maxHeight: "calc(100vh - 200px)" }}>
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead>
+              <TableRow>
+                {headers.map((header, index) => (
+                  <TableCell
+                    key={index}
                     sx={{
-                      backgroundColor: "#CC6CE7",
-                      "&:hover": { backgroundColor: "#D17FD6" },
-                      color: "#fff",
-                    }}
-                    variant="contained"
-                    onClick={() => {
-                      setOpenEditForm(true);
-                      setSelectedItem(row);
+                      backgroundColor: "primary.main",
+                      color: "white",
+                      fontWeight: "bold",
+                      whiteSpace: "nowrap",
                     }}
                   >
-                    Edit
-                  </Button>
-                </TableCell>
+                    {header}
+                  </TableCell>
+                ))}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Paper>
+            </TableHead>
+
+            <TableBody>
+              {tableData.map((row, index) => (
+                <TableRow
+                  hover
+                  key={row.id}
+                  sx={{
+                    "&:nth-of-type(odd)": {
+                      backgroundColor: (theme) => theme.palette.action.hover,
+                    },
+                  }}
+                >
+                  <TableCell sx={{ whiteSpace: "nowrap" }}>
+                    {index + 1}
+                  </TableCell>
+                  <TableCell sx={{ whiteSpace: "nowrap" }}>
+                    {row.name}
+                  </TableCell>
+                  <TableCell sx={{ whiteSpace: "nowrap" }}>
+                    {row.value}
+                  </TableCell>
+                  <TableCell
+                    title={row.description}
+                    sx={{
+                      maxWidth: "200px",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {row.description}
+                  </TableCell>
+                  <TableCell sx={{ whiteSpace: "nowrap" }}>
+                    {getSubCategoryDisplayName(row.subCategory)}
+                  </TableCell>
+                  <TableCell sx={{ whiteSpace: "nowrap" }}>
+                    {row.manufacturer}
+                  </TableCell>
+                  <TableCell sx={{ whiteSpace: "nowrap" }}>
+                    {row.location}
+                  </TableCell>
+                  <TableCell sx={{ whiteSpace: "nowrap" }}>
+                    {row.package_box}
+                  </TableCell>
+                  <TableCell sx={{ whiteSpace: "nowrap" }}>
+                    {row.mpn}
+                  </TableCell>
+                  <TableCell sx={{ whiteSpace: "nowrap" }}>
+                    {row.sap_no}
+                  </TableCell>
+                  <TableCell>{row.stock}</TableCell>
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      sx={{ textTransform: "none", whiteSpace: "nowrap" }}
+                      color={getStockColor(row)}
+                      onClick={() =>
+                        handleStatusClick(
+                          row,
+                          setSelectedItem,
+                          setOpenAvailableForm
+                        )
+                      }
+                    >
+                      {getStockStatusText(row)}
+                    </Button>
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      sx={{
+                        backgroundColor: "#CC6CE7",
+                        "&:hover": { backgroundColor: "#D17FD6" },
+                        color: "#fff",
+                        whiteSpace: "nowrap",
+                      }}
+                      variant="contained"
+                      onClick={() => {
+                        setOpenEditForm(true);
+                        setSelectedItem(row);
+                      }}
+                    >
+                      Edit
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
+    </Box>
   );
 };
 

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="d8ed4441-84c9-40d8-998c-6a6a92f5d15e" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/src/Component/Admin/dashboard/Dashboard2.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Component/Admin/dashboard/Dashboard2.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Component/Admin/dashboard/RequestHistoryModel.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Component/Admin/dashboard/RequestHistoryModel.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Component/Login/ForgotPassword.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Component/Login/ForgotPassword.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Component/Login/Login.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Component/Login/Login.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Component/SuperAdmin/SuperAdminDashboard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Component/SuperAdmin/SuperAdminDashboard.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Component/User/ItemTableForUser.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Component/User/ItemTableForUser.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Component/User/UserDashboaard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Component/User/UserDashboaard.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/HistoryTable.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/HistoryTable.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Service/Config.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/Config.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Service/ForgotPasswordServices.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/ForgotPasswordServices.js" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 0
+}]]></component>
+  <component name="ProjectId" id="2zwhukRFltdARI0ipLsey8yNovn" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="d8ed4441-84c9-40d8-998c-6a6a92f5d15e" name="Changes" comment="" />
+      <created>1752648267511</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1752648267511</updated>
+    </task>
+    <servers />
+  </component>
+</project>

@@ -61,3 +61,25 @@ export const requestItem = async (updatedData) => {
     throw error;
   }
 };
+
+export const importItems = async (file) => {
+  try {
+    
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const token = sessionStorage.getItem("token"); // get JWT from session storage
+
+    const response = await axios.post(`${API_URL}/import`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Error importing items:", error);
+    throw error;
+  }
+}; 
