@@ -65,9 +65,9 @@ const ItemTable = ({
                     },
                   }}
                 >
-                  <TableCell sx={{ whiteSpace: "nowrap" }}>
+                  {/* <TableCell sx={{ whiteSpace: "nowrap" }}>
                     {index + 1}
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell sx={{ whiteSpace: "nowrap" }}>
                     {row.name}
                   </TableCell>

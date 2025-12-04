@@ -64,13 +64,12 @@ export const requestItem = async (updatedData) => {
 
 export const importItems = async (file) => {
   try {
-    
     const formData = new FormData();
     formData.append("file", file);
 
     const token = sessionStorage.getItem("token"); // get JWT from session storage
 
-    const response = await axios.post(`${API_URL}/import`, formData, {
+    const response = await axios.post(`${API_URL}item/import`, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
@@ -82,4 +81,4 @@ export const importItems = async (file) => {
     console.error("Error importing items:", error);
     throw error;
   }
-}; 
+};

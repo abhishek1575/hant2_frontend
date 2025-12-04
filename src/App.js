@@ -1,10 +1,11 @@
 import { Route, Routes, Navigate, } from "react-router-dom";
 import "./App.css";
 import Login from "./Component/Login/Login";
-import Dashboard2 from "./Component/Admin/dashboard/Dashboard2";
+import AdminDashboard from "./Component/Admin/dashboard/AdminDashboard";
 import ForgotPassword from "./Component/Login/ForgotPassword";
 import UserDashboard from "./Component/User/UserDashboaard";
 import SuperAdminDashboard from "./Component/SuperAdmin/SuperAdminDashboard";
+import Dashboard2 from "./Component/SuperAdmin/SuperAdminDashboard";
 
 function App() {
   return (
@@ -14,7 +15,7 @@ function App() {
       <Route path="/forgotpassword" element={<ForgotPassword />} />
 
       {/* admin path */}
-      <Route path="/adashboard" element={<Dashboard2 role="ADMIN" />} />
+      <Route path="/adashboard" element={<AdminDashboard role="ADMIN" />} />
 
       {/*super admin path */}
       <Route

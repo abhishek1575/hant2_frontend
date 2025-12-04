@@ -23,13 +23,23 @@ const Available = ({ open, handleClose, data, getAllData }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("Data received in Available modal:", data);
-    setFormData(data);
-    // Reset return date when item changes
-    setAvailableForm((prev) => ({
-      ...prev,
+    // Set form data only if data is not null
+    if (data) {
+      setFormData(data);
+    } else {
+      setFormData(null);
+    }
+
+    // Reset form fields whenever the modal opens or data changes
+    setAvailableForm({
+      userName: sessionStorage.getItem("Name"),
       returnDate: "",
-    }));
+      quantityRequested: "",
+      projectName: "",
+      remark: "",
+    });
+    // Clear previous errors
+    setErrors({});
   }, [data]);
 
   const handleChange = (e) => {
@@ -88,6 +98,11 @@ const Available = ({ open, handleClose, data, getAllData }) => {
       console.error("Error updating item:", error);
     }
   };
+
+  // Do not render the modal content if there is no data
+  if (!formData) {
+    return null;
+  }
 
   return (
     <Modal

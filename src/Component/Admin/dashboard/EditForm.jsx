@@ -160,9 +160,7 @@ const EditForm = ({ open, handleClose, data, getAllData }) => {
                 label="Sub Category"
               >
                 <MenuItem value="Electronics">Electronics</MenuItem>
-                <MenuItem value="Tools & Instruments">
-                  Tools & Instruments
-                </MenuItem>
+                <MenuItem value="Mechanics">Tools & Instruments</MenuItem>
               </Select>
             </FormControl>
 

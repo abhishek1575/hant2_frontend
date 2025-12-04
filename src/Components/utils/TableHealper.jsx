@@ -1,5 +1,5 @@
 export const headers = [
-  "Sr. No.",
+  // "Sr. No.",
   "Component Name",
   "Value",
   "Specification",
